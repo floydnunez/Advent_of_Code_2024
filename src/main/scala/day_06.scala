@@ -53,7 +53,7 @@ val diffs = ArrayBuffer[List[Int]]()
   // part 2
   var total_2 = 0
   var indexY = 0
-  while(indexY < height) {
+  while(indexY < height) { // fuck it, brute force it
     var indexX = 0
     while(indexX < width) {
       val mapReplaced = ArrayBuffer.from(fileContents)
@@ -71,7 +71,7 @@ val diffs = ArrayBuffer[List[Int]]()
     indexY += 1
     println(s"until height ${indexY} of ${height} partial total: ${total_2}")
   }
-  println(s"part 2: ${total_2}")
+  println(s"part 2: ${total_2}") // 1686 takes like 10 minutes
 
 def checkMap(string: ArrayBuffer[String], xx: Int, yy: Int, width: Int, height: Int):
   (Boolean, ArrayBuffer[String]) =
