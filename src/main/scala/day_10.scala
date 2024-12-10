@@ -20,6 +20,8 @@ case class Square(x: Int, y: Int, height: Int, steps: Int)
   val height = fileContents.length
   val width = fileContents(0).length
 
+  println(s"${width} x ${height}")
+
   val bigLine = fileContents.mkString("")
 
   val (zeroes, map) = getAllZeros(bigLine, width, height)
