@@ -76,7 +76,7 @@ val diffs = ArrayBuffer[List[Int]]()
 def checkMap(string: ArrayBuffer[String], xx: Int, yy: Int, width: Int, height: Int):
   (Boolean, ArrayBuffer[String]) =
   import Dirs._
-  var story = ArrayBuffer[(Dirs, Int, Int)]()
+  val story = ArrayBuffer[(Dirs, Int, Int)]()
   story += ((up, xx, yy))
   val map = ArrayBuffer.from(string)
 //  map.foreach(line=>println(line))
@@ -105,7 +105,7 @@ def checkMap(string: ArrayBuffer[String], xx: Int, yy: Int, width: Int, height: 
           currDir = up
         }
       }
-      val currStep = ((currDir, x, y))
+      val currStep = (currDir, x, y)
       if (story.contains(currStep)) {
 //        println("LOOPSloops loops")
         loops = true

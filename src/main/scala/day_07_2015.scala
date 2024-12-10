@@ -24,14 +24,14 @@ case object NilData extends Value
   val fileContents = Source.fromFile(fileName).getLines().toArray
 
   var data = ListBuffer[List[Int]]()
-  var nodes = mutable.Map[String, ((Oper, Value, Value))]()
+  val nodes = mutable.Map[String, (Oper, Value, Value)]()
   fileContents.foreach { line =>
     val arrowSplit = line.split(" -> ")
     val key = arrowSplit(1)
-    var values = arrowSplit(0).split(" ")
+    val values = arrowSplit(0).split(" ")
     if (values.length == 1) { // easy case, just a value
       if (isInteger(values(0))){
-        nodes(key) = ((Oper.ASS, IntData(values(0).toInt), NilData ))
+        nodes(key) = (Oper.ASS, IntData(values(0).toInt), NilData )
       } else {
         nodes(key) = (Oper.ASS, StringData(values(0)), NilData )
       }

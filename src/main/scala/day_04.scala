@@ -15,8 +15,8 @@ import scala.util.matching.Regex
   var total_2 = 0
   var bigLine = ""
   var largo = 0
-  var forwardDiagonalStr = ListBuffer[String]()
-  var backwardDiagonalStr = ListBuffer[String]()
+  val forwardDiagonalStr = ListBuffer[String]()
+  val backwardDiagonalStr = ListBuffer[String]()
   val height = fileContents.length
   var forward = 0
   var backward = height

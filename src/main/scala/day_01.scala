@@ -6,6 +6,7 @@ import scala.io.Source
 @main def main(): Unit =
   val fileName = "inputs/day01/input.txt"
   val fileContents = Source.fromFile(fileName).getLines().toList
+
   println("File contents:")
 
   val left = ListBuffer[Int]()

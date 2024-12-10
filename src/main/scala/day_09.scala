@@ -13,14 +13,14 @@ import scala.util.matching.Regex
   val fileName = "inputs/day09/input.txt"
   val fileContents = Source.fromFile(fileName).getLines().toArray
 
-  var line = fileContents(0)
+  val line = fileContents(0)
   println((line, ";"))
 
   val sum = line.map(_.asDigit).sum
   println(s"sum: ${sum}")
 
-  var filesystem: Array[Int] = Array.fill(sum)(-1)
-  var filesystem_2: Array[Int] = Array.fill(sum)(-1)
+  val filesystem: Array[Int] = Array.fill(sum)(-1)
+  val filesystem_2: Array[Int] = Array.fill(sum)(-1)
 
   printArray(filesystem)
   fillArray(filesystem, line)
@@ -39,14 +39,14 @@ import scala.util.matching.Regex
 
   var moved = Set[Int]()
   for (i <- (files.length - 1) to 0 by -1) {
-//    printSubArr(files)
-//    printSubArr(spaces)
-    var file = files(i)
+    //    printSubArr(files)
+    //    printSubArr(spaces)
+    val file = files(i)
 //    println(s"checking on: ${file.toList}")
     var actuallyMoved = false
     boundary {
       spaces.foreach { space =>
-        if (!(moved.contains(file(0))) && file(2) <= space(1) && file(1) > space(0)) { //fits and is a move to the left
+        if (!moved.contains(file(0)) && file(2) <= space(1) && file(1) > space(0)) { //fits and is a move to the left
           moved += file(0)
           actuallyMoved = true
 //          println(s"moving ${file.toList} to ${space(0)}")
@@ -60,7 +60,7 @@ import scala.util.matching.Regex
       }
     }
     if (actuallyMoved) {
-      var (_, newSpaces) = calcFilePosAndSizes(filesystem_2)
+      val (_, newSpaces) = calcFilePosAndSizes(filesystem_2)
       spaces = newSpaces
     }
   }
@@ -72,10 +72,10 @@ import scala.util.matching.Regex
 def printSubArr(array: Array[Array[Int]]): Unit =
   println(array.map(_.mkString("(", ", ", ")")).mkString("(", ", ", ")"))
 
-def calcFilePosAndSizes(filesystem: Array[Int]): (( Array[Array[Int]], Array[Array[Int]] )) =
-  var resultFiles = ArrayBuffer[Array[Int]]()
+def calcFilePosAndSizes(filesystem: Array[Int]): ( Array[Array[Int]], Array[Array[Int]] ) =
+  val resultFiles = ArrayBuffer[Array[Int]]()
   var current = Array(-1, -1, -1)
-  var resultSpaces = ArrayBuffer[Array[Int]]()
+  val resultSpaces = ArrayBuffer[Array[Int]]()
   var currSpace = Array(-1,-1)
   var fillingSpace = false
   filesystem.zipWithIndex.foreach { case(value, index) =>
@@ -113,7 +113,7 @@ def calcFilePosAndSizes(filesystem: Array[Int]): (( Array[Array[Int]], Array[Arr
     resultSpaces += currSpace
   }
 
-  return ((resultFiles.toArray, resultSpaces.toArray))
+  return (resultFiles.toArray, resultSpaces.toArray)
 
 def defrag(filesystem: Array[Int]): Unit = {
   while (hasADotInBetween(filesystem)) {

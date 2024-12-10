@@ -26,7 +26,7 @@ enum Oper2 {
 
   var data = ListBuffer[List[Long]]()
 
-  var nodes = mutable.Map[String, List[List[Int]]]()
+  val nodes = mutable.Map[String, List[List[Int]]]()
   fileContents.zipWithIndex.foreach { case(line, y) =>
     line.zipWithIndex.foreach{ case(char, x) =>
       val str = char.toString
@@ -37,8 +37,8 @@ enum Oper2 {
     }
   }
 
-  var antinodes = mutable.Set[List[Int]]()
-  var antinodes2 = mutable.Set[List[Int]]()
+  val antinodes = mutable.Set[List[Int]]()
+  val antinodes2 = mutable.Set[List[Int]]()
   nodes.foreach { case(key, list) =>
     println(s"${key}: ${list}")
     val pairs = list.combinations(2) //I assume this removes single antennas?
@@ -65,7 +65,7 @@ enum Oper2 {
   println(s"day 08, part 2: ${antinodes2.size}") // 1285
 
 def generateAntinodes(list1: List[Int], list2: List[Int], width: Int, height: Int): List[List[Int]] =
-  var result = ListBuffer[List[Int]]()
+  val result = ListBuffer[List[Int]]()
   boundary {
     var prev = list1
     var curr = list2
@@ -95,7 +95,7 @@ def generateAntinode(a: List[Int], b: List[Int]): List[Int] =
 //  println(s"generating for ${a} and ${b}")
   val diffx = a(0) - b(0)
   val diffy = a(1) - b(1)
-  var result = ListBuffer[Int]()
+  val result = ListBuffer[Int]()
   result += b(0) - diffx
   result += b(1) - diffy
 //  println(s" = ${result}")

@@ -11,8 +11,8 @@ import scala.util.matching.Regex
   val fileContents = Source.fromFile(fileName).getLines().toList
   println("File contents:")
 
-  var pairs = ListBuffer[List[Int]]()
-  var data = ListBuffer[String]()
+  val pairs = ListBuffer[List[Int]]()
+  val data = ListBuffer[String]()
 
   var isData = false
   fileContents.foreach( line => {
@@ -39,7 +39,7 @@ import scala.util.matching.Regex
   var total = 0
   var total_2 = 0
 
-  var wrongs = ListBuffer[List[Int]]()
+  val wrongs = ListBuffer[List[Int]]()
 
   updates.foreach{ update =>
     var allRight = true
@@ -100,7 +100,7 @@ import scala.util.matching.Regex
 def swapAround(ints: List[Int], v1: Int, v2: Int): List[Int] =
   val i1 = ints.indexOf(v1)
   val i2 = ints.indexOf(v2)
-  var result = ListBuffer[Int]()
+  val result = ListBuffer[Int]()
   ints.zipWithIndex.foreach { case (value, index) =>
     if (index == i1) {
       result += v1

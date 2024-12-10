@@ -20,7 +20,7 @@ enum Oper2 {
   val fileName = "inputs/day07/input.txt"
   val fileContents = Source.fromFile(fileName).getLines().toArray
 
-  var data = ListBuffer[List[Long]]()
+  val data = ListBuffer[List[Long]]()
 
   fileContents.foreach { line =>
     val colon = line.split(":")

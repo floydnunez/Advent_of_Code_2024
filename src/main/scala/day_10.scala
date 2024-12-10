@@ -22,7 +22,7 @@ case class Square(x: Int, y: Int, height: Int, steps: Int)
 
   val bigLine = fileContents.mkString("")
 
-  var (zeroes, map) = getAllZeros(bigLine, width, height)
+  val (zeroes, map) = getAllZeros(bigLine, width, height)
   println(zeroes)
   var total_1 = 0
   var total_2 = 0
@@ -63,18 +63,18 @@ def djikstra(optionFrom: Option[Square],map: mutable.Map[(Int, Int), Square], st
 def printArray(arr: Array[String]): Unit =
   arr.foreach(println)
 
-def getAllZeros(strings: String, width: Int, height: Int): ((List[Square], Map[(Int, Int), Square])) =
-  var result_zeros = ListBuffer[Square]()
-  var map = Map[((Int, Int)), Square]()
+def getAllZeros(strings: String, width: Int, height: Int): (List[Square], Map[(Int, Int), Square]) =
+  val result_zeros = ListBuffer[Square]()
+  var map = Map[(Int, Int), Square]()
 
   strings.zipWithIndex.foreach{ case(letter, index) =>
     val indexX = index % width
     val indexY = index / width
     val value = letter.asDigit
-    var square = Square(indexX, indexY, value, -1)
+    val square = Square(indexX, indexY, value, -1)
     if (value == 0) {
       result_zeros += square
     }
     map = map.updated((indexX, indexY), square)
   }
-  return ((result_zeros.toList, map))
+  return (result_zeros.toList, map)
