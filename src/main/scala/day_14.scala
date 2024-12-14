@@ -68,6 +68,7 @@ def calcSecurity(width: Int, height: Int, listRobots: List[Robot]) = {
   val maxTurns: Long = 10_000_000_000L
   val formatter = NumberFormat.getInstance(Locale.GERMANY)
 
+  var minCoef = 100_000_000_000L
   while (turn < maxTurns) {
     if (turn % 10_000_000 == 0) {
       println("10 million turns")
@@ -77,7 +78,6 @@ def calcSecurity(width: Int, height: Int, listRobots: List[Robot]) = {
       update(robot, width, height)
     }
     val coefsec: Long = calcSecurity(width, height, listRobots)
-    var minCoef = securityAt100 * 0.4
     if (coefsec < minCoef ) {
       minCoef = coefsec
       val formattedNumber = formatter.format(minCoef)
@@ -87,37 +87,6 @@ def calcSecurity(width: Int, height: Int, listRobots: List[Robot]) = {
     }
   }
   //Part 2 7774
-
-def checkTree(robots: List[Robot], width: Int, height: Int): Boolean =
-  //I guess there shouldn't be any robots near the top corners
-  val off = 29
-  val cornerDistance = width/2 - off
-  var noRobotInTopLeftCorner = true
-  var noRobotInTopRightCorner = true
-//  var noRobotInBottomLeftCorner = true
-//  var noRobotInBottomRightCorner = true
-  boundary {
-    robots.foreach { robot =>
-      if (robot.x < width / 2 - off && robot.y < height / 2 - off && robot.x + robot.y < cornerDistance) {
-          noRobotInTopLeftCorner = false
-          break()
-      }
-      if (robot.x > width / 2 + off && robot.y < height / 2 - off && (width - robot.x) + robot.y < cornerDistance) {
-        noRobotInTopRightCorner = false
-        break()
-      }
-//      if (robot.x < width / 2 - off && robot.y > height / 2 + off) {
-//        noRobotInBottomLeftCorner = false
-//        break()
-//      }
-//      if (robot.x > width / 2 + off && robot.y > height / 2 + off) {
-//        noRobotInBottomRightCorner = false
-//        break()
-//      }
-    }
-  }
-  noRobotInTopLeftCorner && noRobotInTopRightCorner
-//  noRobotInTopLeftCorner && noRobotInTopRightCorner && noRobotInBottomLeftCorner && noRobotInBottomRightCorner
 
 def printRobots(robots: List[Robot], width: Int, height: Int): Unit =
   println("")
