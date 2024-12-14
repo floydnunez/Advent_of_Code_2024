@@ -6,3 +6,5 @@ lazy val root = (project in file("."))
   .settings(
     name := "Advent_2024",
   )
+
+libraryDependencies += "org.apache.commons" % "commons-math3" % "3.6.1"
