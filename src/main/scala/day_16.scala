@@ -25,7 +25,7 @@ def initCostMap(): mutable.Map[Char, Int] =
   result
 
 @main def main(): Unit =
-  val fileName = "inputs/day16/challenge_4.txt"
+  val fileName = "inputs/day16/challenge_3.txt"
   if (fileName == "inputs/day16/input.txt" || fileName.contains("challenge")) {
     debug = false
   }
