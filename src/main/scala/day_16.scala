@@ -25,10 +25,11 @@ def initCostMap(): mutable.Map[Char, Int] =
   result
 
 @main def main(): Unit =
-  val fileName = "inputs/day16/challenge_3.txt"
+  val fileName = "inputs/day16/input.txt"
   if (fileName == "inputs/day16/input.txt" || fileName.contains("challenge")) {
     debug = false
   }
+
   val fileContents = Source.fromFile(fileName).getLines().toArray
 
   width = fileContents(0).length
@@ -53,13 +54,13 @@ def initCostMap(): mutable.Map[Char, Int] =
   println(s"${width} x ${height}. From ${ini} to ${fin}")
   flood(map, '>', (ini.x, ini.y), 0)
   val endNode = map((fin.x, fin.y))
-  println(endNode)
+//  println(endNode)
   val minCost = endNode.costs.values.min
   println(s"\n\nDay 16 Part 1: ${minCost}") //88416
   println(s"recursive calls: ${recursiveCalls}")
   //Part 2. Let's backtrack
   println("\n\n\n\n\n\n\n\n------------------------------------------------\n\n\n\n\n\n\n\n")
-  debug = true
+//  debug = true
   backtrackFrom(map, (endNode.x, endNode.y), Int.MaxValue)
   printMapPath(map, minCost)
   val bestNodesCount = map.values.count(_.isBest)
@@ -67,7 +68,6 @@ def initCostMap(): mutable.Map[Char, Int] =
   println(s"\nDay 16 Part 2: ${bestNodesCount}") //442
 
 def backtrackFrom(map: mutable.Map[(Int, Int), Node], pos: (Int, Int), prevCost: Int): Unit = {
-  recursiveCalls += 1
   if (!map.contains(pos)) {
     return
   }
@@ -116,44 +116,111 @@ def printDebug(str: String): Unit =
   if (debug)
     println(str)
 
-def flood(map: mutable.Map[(Int, Int), Node], dir: Char, pos: (Int, Int), cost: Int): Unit =
-  val currNode = map(pos)
+def floodBreadth(map: mutable.Map[(Int, Int), Node], startDir: Char, startPos: (Int, Int), startCost: Int): Unit = {
+  val queue = mutable.Queue[(Char, (Int, Int), Int)]() // (Direction, Position, Cost)
+  queue.enqueue((startDir, startPos, startCost)) // Start with the initial position
+
+  while (queue.nonEmpty) {
+    val (dir, pos, cost) = queue.dequeue() // Get the current node from the queue
+    val currNode = map(pos)
+    recursiveCalls += 1
+
+    calcCosts(currNode, dir, cost) // Update costs
+    printDebug(s"costs calculated! ${currNode}")
+
+    // Calculate neighbors
+    val nextPos = dirs.view.mapValues { case (dx, dy) => (pos._1 + dx, pos._2 + dy) }.toMap
+    nextPos.foreachEntry { case (nextDir, npos) =>
+      printDebug(s"  trying ${nextDir} => ${npos}")
+      if (map.contains(npos)) {
+        val nextNode = map(npos)
+        if (nextNode.char == '.' || nextNode.char == 'E') {
+          printDebug(s"   nn costs dir: ${nextNode.costs(nextDir)} > curr node costs? ${currNode.costs(nextDir) + 1}")
+          if (nextNode.costs(nextDir) > currNode.costs(nextDir) + 1) {
+            // Update the cost and enqueue the neighbor for further processing
+            nextNode.costs(nextDir) = currNode.costs(nextDir) + 1
+            queue.enqueue((nextDir, npos, currNode.costs(nextDir) + 1))
+          }
+        }
+      }
+    }
+  }
+}
+
+def floodDepth(map: mutable.Map[(Int, Int), Node], startDir: Char, startPos: (Int, Int), startCost: Int): Unit = {
+  val stack = mutable.Stack[(Char, (Int, Int), Int)]() // (Direction, Position, Cost)
+  stack.push((startDir, startPos, startCost)) // Start with the initial position
+
+  while (stack.nonEmpty) {
+    val (dir, pos, cost) = stack.pop() // Get the current node from the stack
+    val currNode = map(pos)
+    recursiveCalls += 1
+
+    calcCosts(currNode, dir, cost) // Update costs
+    printDebug(s"costs calculated! ${currNode}")
+
+    // Calculate neighbors
+    val nextPos = dirs.view.mapValues { case (dx, dy) => (pos._1 + dx, pos._2 + dy) }.toMap
+    nextPos.foreachEntry { case (nextDir, npos) =>
+      printDebug(s"  trying ${nextDir} => ${npos}")
+      if (map.contains(npos)) {
+        val nextNode = map(npos)
+        if (nextNode.char == '.' || nextNode.char == 'E') {
+          printDebug(s"   nn costs dir: ${nextNode.costs(nextDir)} > curr node costs? ${currNode.costs(nextDir) + 1}")
+          if (nextNode.costs(nextDir) > currNode.costs(nextDir) + 1) {
+            // Update the cost and push the neighbor onto the stack for further processing
+            nextNode.costs(nextDir) = currNode.costs(nextDir) + 1
+            stack.push((nextDir, npos, currNode.costs(nextDir) + 1))
+          }
+        }
+      }
+    }
+  }
+}
+
+
+def flood(floodedmap: mutable.Map[(Int, Int), Node], dir: Char, pos: (Int, Int), cost: Int): Unit =
+  recursiveCalls += 1
+  val currNode = floodedmap(pos)
   calcCosts(currNode, dir, cost)
-  printDebug(s"costs calculated! ${currNode}")
+//  printDebug(s"costs calculated! ${currNode}")
+
   val nextPos = dirs.view.mapValues { case (dx, dy) => (pos._1 + dx, pos._2 + dy) }.toMap
-  nextPos.foreachEntry{ case(nextDir, npos) =>
-//    printDebug(s"? ${nextDir} => ${npos}")
-    val nextNode = map(npos)
+  nextPos.foreachEntry { case (nextDir, npos) =>
+    printDebug(s"  trying ${nextDir} => ${npos}")
+    val nextNode = floodedmap(npos)
     if (nextNode.char == '.' || nextNode.char == 'E') {
-      printDebug(s"nn costs dir: ${nextNode.costs(nextDir)} > curr node costs? ${currNode.costs(nextDir) + 1}")
-      if (nextNode.costs(nextDir) > currNode.costs(nextDir) + 1) {
-        flood(map, nextDir, npos, currNode.costs(nextDir) + 1)
+      val newCost = currNode.costs(nextDir) + 1
+      printDebug(s"   nn costs dir: ${nextNode.costs(nextDir)} > curr node costs? ${newCost}")
+      if (nextNode.costs(nextDir) > newCost) {
+          flood(floodedmap, nextDir, npos, newCost)
       }
     }
   }
 
 def calcCosts(node: Node, dir: Char, cost: Int):Unit =
+//  printDebug(s"calc Costs: inicost: ${cost} ${dir} ${node}")
   cardinal.foreach{ case cardinalDir =>
+//    printDebug(s" trying ${cardinalDir}")
     if (cardinalDir == dir) {
       if (node.costs(dir) > cost) {
-        printDebug(s"same direction! ${dir}")
+//        printDebug(s"   same direction! ${dir}")
         node.costs(cardinalDir) = cost
       }
     } else {
       val currDirIndex = cardinal.indexOf(dir)
       val cardinalDirIndex = cardinal.indexOf(cardinalDir)
-      printDebug(s" is this a 90 degrees turn? ${dir} to ${cardinalDir} ${currDirIndex} to ${cardinalDirIndex} abs diff ${Math.abs(currDirIndex - cardinalDirIndex)}")
-      printDebug(s"condition if: ${Math.abs(currDirIndex - cardinalDirIndex) == 1 || (currDirIndex == 0 && cardinalDirIndex == 3)|| (currDirIndex == 3 && cardinalDirIndex == 0) }")
+//      printDebug(s"   is this a 90 degrees turn? ${dir} to ${cardinalDir} ${currDirIndex} to ${cardinalDirIndex} abs diff ${Math.abs(currDirIndex - cardinalDirIndex)}")
       if (Math.abs(currDirIndex - cardinalDirIndex) == 1
         || (currDirIndex == 0 && cardinalDirIndex == 3)
         || (currDirIndex == 3 && cardinalDirIndex == 0) ) {
         if (node.costs(cardinalDir) > cost) {
-          printDebug(s"90 degrees! ${dir} to ${cardinalDir}")
+//          printDebug(s"      90 degrees! ${dir} to ${cardinalDir}")
           node.costs(cardinalDir) = cost + 1000
         }
       } else {
         if (node.costs(cardinalDir) > cost) {
-          printDebug(s"180 degrees! ${dir} to ${cardinalDir}")
+//          printDebug(s"      180 degrees! ${dir} to ${cardinalDir}")
           node.costs(cardinalDir) = cost + 2000
         }
       }
