@@ -5,8 +5,11 @@ import java.util.Locale
 import scala.io.Source
 import scala.collection.mutable
 import scala.collection.mutable.{ArrayBuffer, ListBuffer}
-import scala.util.boundary
+import scala.util.{Random, boundary}
 import scala.util.boundary.break
+
+
+val rng = new Random(122) // magic number. Reduces calls to 2.7 millions, from 4.1 without random
 
 case class Pos(var x: Int, var y: Int)
 
@@ -25,6 +28,7 @@ def initCostMap(): mutable.Map[Char, Int] =
   result
 
 @main def main(): Unit =
+  val startTime = System.nanoTime()
   val fileName = "inputs/day16/input.txt"
   if (fileName == "inputs/day16/input.txt" || fileName.contains("challenge")) {
     debug = false
@@ -66,6 +70,10 @@ def initCostMap(): mutable.Map[Char, Int] =
   val bestNodesCount = map.values.count(_.isBest)
   println(s"\nDay 16 Part 1: ${minCost}") //88416
   println(s"\nDay 16 Part 2: ${bestNodesCount}") //442
+  val endTime = System.nanoTime()
+  val duration = (endTime - startTime) / 1e6
+  println(s"recursive calls: ${recursiveCalls}")
+  println(f"Execution time: $duration%.3f ms")
 
 def backtrackFrom(map: mutable.Map[(Int, Int), Node], pos: (Int, Int), prevCost: Int): Unit = {
   if (!map.contains(pos)) {
@@ -178,14 +186,17 @@ def floodDepth(map: mutable.Map[(Int, Int), Node], startDir: Char, startPos: (In
   }
 }
 
-
 def flood(floodedmap: mutable.Map[(Int, Int), Node], dir: Char, pos: (Int, Int), cost: Int): Unit =
   recursiveCalls += 1
   val currNode = floodedmap(pos)
   calcCosts(currNode, dir, cost)
 //  printDebug(s"costs calculated! ${currNode}")
 
-  val nextPos = dirs.view.mapValues { case (dx, dy) => (pos._1 + dx, pos._2 + dy) }.toMap
+//  val nextPos = dirs.view.mapValues { case (dx, dy) => (pos._1 + dx, pos._2 + dy) }.toMap
+  val nextPos = rng.shuffle(dirs.toList)
+    .view
+    .map { case (dir, (dx, dy)) => dir -> (pos._1 + dx, pos._2 + dy) }
+    .toMap
   nextPos.foreachEntry { case (nextDir, npos) =>
     printDebug(s"  trying ${nextDir} => ${npos}")
     val nextNode = floodedmap(npos)
