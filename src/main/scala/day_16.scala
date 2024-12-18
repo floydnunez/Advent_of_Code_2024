@@ -29,8 +29,8 @@ def initCostMap(): mutable.Map[Char, Int] =
 
 @main def main(): Unit =
   val startTime = System.nanoTime()
-  val fileName = "inputs/day16/input.txt"
-  if (fileName == "inputs/day16/input.txt" || fileName.contains("challenge")) {
+  val fileName = "inputs/day16/challenge_5.txt"
+  if (fileName.contains("input") || fileName.contains("challenge")) {
     debug = false
   }
 
